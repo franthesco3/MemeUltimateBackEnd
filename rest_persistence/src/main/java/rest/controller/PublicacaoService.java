@@ -22,70 +22,66 @@ import javax.ws.rs.core.Response.Status;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
+import rest.dao.PublicacaoDAO;
 import rest.dao.UserDAO;
+import rest.model.Publicacao;
 import rest.model.User;
 
-@Path("/users")
-public class UserService {
+@Path("/publicacao")
+public class PublicacaoService {
+	private static Publicacao p;
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public List<User> getUsers() {
-		return UserDAO.getAllUsers();
+	public List<Publicacao> getPublicacao() {
+		return PublicacaoDAO.getPublicacao();
 	}
 
 	// Controle da resposta (status code, mensagem)
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response getUser(@PathParam("id") int id) {
-		return Response.status(Status.OK).entity(UserDAO.getUser(id)).build();
+	public Response gePublicacao(@PathParam("id") int id) {
+		return Response.status(Status.OK).entity(PublicacaoDAO.getPublicacao(id)).build();
 	}
 
 	@GET
 	@Path("/search")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public User getUserByName(@QueryParam("username") String username) {
+	public Publicacao getPublicacaoByName(@QueryParam("texto") String texto) {
 
-		return UserDAO.getUserByUsername(username);
+		return PublicacaoDAO.getPublicacaoByUsername(texto);
 	}
 
     @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response addUser(@FormDataParam("image") InputStream uploadedInputStream,
-            @FormDataParam("username") String username, @FormDataParam("password") String password,  @FormDataParam("email") String email,  @FormDataParam("telefone") String telefone,  @FormDataParam("data") String data) {
-        if(username == null || password == null || username.equals("null") || password.equals("null")) {
-        	System.out.println("Campos vazios, entre com valores válidos !");
-        	return Response.status(400).build();
-        } if(UserDAO.getUserByUsername(username) != null) {
-        	System.out.println("Usuário ja existente, tente outros dados!");
-        	return Response.status(400).build();
-        	
-        }
-        return Response.status(Status.OK).entity(UserDAO.addUser(username, password, email, telefone, data,  uploadedInputStream)).build();
+    public Response addPublicacao(@FormDataParam("image") InputStream uploadedInputStream,
+            @FormDataParam("texto") String texto, @FormDataParam("id_user") int id_user,  @FormDataParam("id")int id,  @FormDataParam("likes") int likes) {
+        
+        return Response.status(Status.OK).entity(PublicacaoDAO.addPublicacao(texto, id_user, id, likes, null)).build();
     }
 
 	@PUT
 	@Path("/{id}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public User updateUser(@PathParam("id") int id, @FormDataParam("image") InputStream uploadedInputStream,
+	public Publicacao updatePublicacao(@PathParam("texto") String texto, @PathParam("id_user") int id_user, @PathParam("id") int id, @FormDataParam("image") InputStream uploadedInputStream,
 			@FormDataParam("image") FormDataContentDisposition contentDispositionHeader,
-			@FormDataParam("username") String username, @FormDataParam("password") String password, @FormDataParam("email") String email, @FormDataParam("telefone") String telefone, @FormDataParam("data") String data) {
-		
-		if(contentDispositionHeader.getFileName() == null) {
-			return UserDAO.updateUser(id, username, password, email, telefone, data, null);	
-		} else {
-			return UserDAO.updateUser(id, username, password, email, telefone, data, uploadedInputStream);
-		}
-	}
+			@FormDataParam("likes") int likes) {
+				if(contentDispositionHeader.getFileName() == null) {
+					if(p.getlikes() == true) return PublicacaoDAO.updatePublicacao(id, likes, null);
+				}else {
+				return PublicacaoDAO.addPublicacao(texto, id, id_user,likes, uploadedInputStream);
+				}
+				return null;
+			}
 
 	@DELETE
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public void deleteUser(@PathParam("id") int id) {
-		UserDAO.deleteUser(id);
+		PublicacaoDAO.deletePublicacao(id);
 	}
 	
 	//Session

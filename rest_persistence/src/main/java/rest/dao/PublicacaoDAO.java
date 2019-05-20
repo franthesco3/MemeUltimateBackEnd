@@ -14,27 +14,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import rest.model.Publicacao;
 import rest.model.User;
 import rest.util.DbUtil;
 
-public class UserDAO {
+public class PublicacaoDAO {
+	static Publicacao p;
+	
 
 	private static Connection connection = DbUtil.getConnection();
 
-	public static User addUser(String username, String password, String email, String telefone, String data, InputStream input) {
+	public static Publicacao addPublicacao(String texto, int id_user, int id, int likes, InputStream input) {
 		try {
-			PreparedStatement pStmt = connection.prepareStatement("insert into users(username, password, email, telefone, data) values (?, ?, ?, ?, ?)",
+			PreparedStatement pStmt = connection.prepareStatement("insert into publicacao(texto, id_user, id, likes, image) values (?, ?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
-			pStmt.setString(1, username);
-			pStmt.setString(2, password);
-			pStmt.setString(3, email);
-			pStmt.setString(4, telefone);
-			pStmt.setString(5, data);
+			pStmt.setString(1, texto);
+			pStmt.setInt(2, id_user);
+			pStmt.setInt(3, id);
+			pStmt.setInt(4, likes);
 			pStmt.executeUpdate();
 			ResultSet rs = pStmt.getGeneratedKeys();
 			if (rs.next()) {
 				uploadFile(input, rs.getInt("id"));
-				return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("telefone"), rs.getString("data"));
+				return new Publicacao(rs.getString("texto"), rs.getInt("id_user"), rs.getInt("id"), rs.getInt("likes"), rs.getString("image"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -43,22 +45,17 @@ public class UserDAO {
 		return null;
 	}
 
-	public static User updateUser(int id, String username, String password, String email, String telefone, String data, InputStream input) {
+	public static Publicacao updatePublicacao(int id, int likes, InputStream input) {
 		try {
-			PreparedStatement pStmt = connection.prepareStatement("update users set username=?, password=?, email=?, telefone=?, data=? where id=?",
+			PreparedStatement pStmt = connection.prepareStatement("update publicacao set id=?, likes=? where id=?",
 					Statement.RETURN_GENERATED_KEYS);
-			pStmt.setString(1, username);
-			pStmt.setString(2, password);
-			pStmt.setInt(3, id);
-			pStmt.setString(4, email);
-			pStmt.setString(5, telefone);
-			pStmt.setString(6, data);
+			pStmt.setInt(1, id);
+			pStmt.setInt(2, likes);
 			pStmt.executeUpdate();
 			ResultSet rs = pStmt.getGeneratedKeys();
-			if (rs.next()) {
-				if(input != null)
-					uploadFile(input, rs.getInt("id"));
-				return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("telefone"), rs.getString("data"));
+			if(rs.next()) {
+				uploadFile(input, rs.getInt("id"));
+					return new Publicacao(rs.getInt(likes)+1);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -66,11 +63,10 @@ public class UserDAO {
 
 		return null;
 	}
-	
 
-	public static void deleteUser(int id) {
+	public static void deletePublicacao(int id) {
 		try {
-			PreparedStatement pStmt = connection.prepareStatement("delete from users where id=?");
+			PreparedStatement pStmt = connection.prepareStatement("delete from publicacao where id=?");
 			pStmt.setInt(1, id);
 			pStmt.executeUpdate();
 		} catch (SQLException e) {
@@ -78,29 +74,29 @@ public class UserDAO {
 		}
 	}
 
-	public static List<User> getAllUsers() {
-		List<User> users = new ArrayList<User>();
+	public static List<Publicacao> getPublicacao() {
+		List<Publicacao> publicacao = new ArrayList<Publicacao>();
 		try {
 			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery("select * from users order by id");
+			ResultSet rs = stmt.executeQuery("select * from publicacao order by id");
 			while (rs.next()) {
-				User user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("telefone"), rs.getString("data"));
-				users.add(user);
+				Publicacao publica = new Publicacao(rs.getString("texto"), rs.getInt("id_user"), rs.getInt("id"), rs.getInt("likes"), rs.getString("image"));
+				publicacao.add(publica);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return users;
+		return publicacao;
 	}
 
-	public static User getUser(int id) {
+	public static Publicacao getPublicacao(int id) {
 		try {
-			PreparedStatement pStmt = connection.prepareStatement("select * from users where id=?");
+			PreparedStatement pStmt = connection.prepareStatement("select * from publicacao where id=?");
 			pStmt.setInt(1, id);
 			ResultSet rs = pStmt.executeQuery();
 			if (rs.next()) {
-				return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("telefone"), rs.getString("data"));
+				return new Publicacao(rs.getString("texto"), rs.getInt("id_user"), rs.getInt("id"), rs.getInt("likes"), rs.getString("image"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -108,14 +104,14 @@ public class UserDAO {
 
 		return null;
 	}
-	public static boolean i;
-	public static User getUserByUsername(String username) {
+
+	public static Publicacao getPublicacaoByUsername(String username) {
 		try {
-			PreparedStatement pStmt = connection.prepareStatement("select * from users where username=?");
+			PreparedStatement pStmt = connection.prepareStatement("select * from publicacao where username=?");
 			pStmt.setString(1, username);
 			ResultSet rs = pStmt.executeQuery();
 			if (rs.next()) {
-				return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("telefone"), rs.getString("data"));
+				return new Publicacao(rs.getString("texto"), rs.getInt("id_user"), rs.getInt("id"), rs.getInt("likes"), rs.getString("image"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

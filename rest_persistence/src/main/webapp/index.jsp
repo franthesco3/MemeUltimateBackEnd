@@ -6,5 +6,9 @@
 <p style="text-indent:20px;">/users</p>
 	<h3 style="text-indent:40px;">For search by username:</h3>
 	<p style="text-indent:40px;">/search?username={username}</p>
+	
+<p style="text-indent:20px;">/posts</p>
+	<h3 style="text-indent:40px;">For search by posts:</h3>
+	<p style="text-indent:40px;">/search?posts={posts}</p>
 </body>
 </html>

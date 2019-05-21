@@ -14,11 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import rest.model.Publicacao;
 import rest.model.User;
 import rest.util.DbUtil;
 
 public class UserDAO {
-
+	//Para Users
 	private static Connection connection = DbUtil.getConnection();
 
 	public static User addUser(String username, String password, String email, String telefone, String data, InputStream input) {
@@ -122,7 +123,95 @@ public class UserDAO {
 
 		return null;
 	}
+	
+	//Para manipular Posts
+	public static Publicacao addPost(String texto, int id_user, int likes, InputStream input) {
+		try {
+			PreparedStatement pStmt = connection.prepareStatement("insert into publicacao(texts, id_users, likes) values (?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			pStmt.setString(1, texto);
+			pStmt.setInt(2, id_user);
+			//pStmt.setString(2, id_user);
+			pStmt.setInt(3, likes);
+			pStmt.executeUpdate();
+			ResultSet rs = pStmt.getGeneratedKeys();
+			if (rs.next()) {
+				uploadFile(input, rs.getInt("id"));
+				
+				return new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
+		return null;
+	}
+
+	public static Publicacao updatePost(int id, String texto, int id_user, int likes, InputStream input) {
+		try {
+			PreparedStatement pStmt = connection.prepareStatement("update publicacao set texts=?, id_users=?, likes=? where id=?",
+					Statement.RETURN_GENERATED_KEYS);
+			pStmt.setString(1, texto);
+			pStmt.setInt(2, id_user);
+			pStmt.setInt(3, likes);
+			pStmt.setInt(4, id);
+			pStmt.executeUpdate();
+			ResultSet rs = pStmt.getGeneratedKeys();
+			if (rs.next()) {
+				if(input != null)
+					uploadFile(input, rs.getInt("id"));
+				return new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static void deletePosts(int id) {
+		try {
+			PreparedStatement pStmt = connection.prepareStatement("delete from publicacao where id=?");
+			pStmt.setInt(1, id);
+			pStmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static List<Publicacao> getAllPosts() {
+		List<Publicacao> post = new ArrayList<Publicacao>();
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT post.id, post.likes,post.id_users, u.username, post.texts" + 
+					" FROM publicacao post, users u WHERE post.id_users = u.id");
+			while (rs.next()) {
+				Publicacao publi = new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"));
+				post.add(publi);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return post;
+	}
+	
+	public static Publicacao getPost(int id) {
+		try {
+			PreparedStatement pStmt = connection.prepareStatement("select * from publicacao where id=?");
+			pStmt.setInt(1, id);
+			ResultSet rs = pStmt.executeQuery();
+			if (rs.next()) {
+				return new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	//Para Manipular arquivos
 	private static void uploadFile(InputStream uploadedInputStream, int id) {
 		try {
 			InputStream inputStream = DbUtil.class.getClassLoader().getResourceAsStream("uploads.properties");

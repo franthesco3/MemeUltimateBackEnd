@@ -2,6 +2,9 @@ package rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import java.util.ArrayList;
+
 import javax.xml.bind.annotation.XmlAccessType;
 
 @XmlRootElement(name = "user")
@@ -14,6 +17,7 @@ public class User {
 	private String email;
 	private String telefone;
 	private String data;
+	private ArrayList<Publicacao> publicacao = new ArrayList<Publicacao>();
 	
 	public User() {
 		
@@ -27,6 +31,7 @@ public class User {
 		this.email = email;
 		this.telefone = telefone;
 		this.data = data;
+		
 	}
 
 	public int getId() {
@@ -76,6 +81,11 @@ public class User {
 	public void setData(String data) {
 		this.data = data;
 	}
+	
+	public ArrayList getPublicacao() {
+		return publicacao;
+	}
+	
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + "]";

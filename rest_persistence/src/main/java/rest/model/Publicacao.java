@@ -11,17 +11,28 @@ public class Publicacao {
 	private int id_user;
 	private int id;
 	private int likes;
+<<<<<<< HEAD
 	private String username;
+=======
+	private String image;
+	private boolean click = false;
+	
+>>>>>>> c76dbdff49b573d369e9dca160d5d04c2bccc733
 
 	public Publicacao(){
 	
 	}
 	
-	public Publicacao(String texto, int id_user, int id, int likes) {
+	public Publicacao(int likes) {
+		this.likes = likes;
+	}
+	
+	public Publicacao(String texto, int id_user, int id, int likes, String image) {
 		this.texto = texto;
 		this.likes = likes;
 		this.id = id;
 		this.id_user = id_user;
+		this.image = image;
 	}
 	
 	public String getTexto() {
@@ -55,10 +66,30 @@ public class Publicacao {
 	public void setId_user(int id_user) {
 		this.id_user = id_user;
 	}
+<<<<<<< HEAD
 
 	@Override
 	public String toString() {
 		return "Publicacao [texto=" + texto + ", id_user=" + id_user + ", id=" + id + ", likes=" + likes + " username = "+username+"]";
+=======
+	
+	public String getImage() {
+		return image;
+	}
+	
+	public void setImage(String Image) {
+		this.image = image;
+	}
+	
+	public boolean getlikes() {
+		if(click == true) return true;
+		return false;
+	}
+	
+	@Override
+	 public String toString() {
+		return  "Publicacao [id=" + id + ", Texto=" + texto + ", id_user=" + id_user + "]";
+>>>>>>> c76dbdff49b573d369e9dca160d5d04c2bccc733
 	}
 	
 }

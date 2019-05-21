@@ -67,6 +67,7 @@ public class UserDAO {
 
 		return null;
 	}
+	
 
 	public static void deleteUser(int id) {
 		try {
@@ -108,7 +109,7 @@ public class UserDAO {
 
 		return null;
 	}
-
+	public static boolean i;
 	public static User getUserByUsername(String username) {
 		try {
 			PreparedStatement pStmt = connection.prepareStatement("select * from users where username=?");

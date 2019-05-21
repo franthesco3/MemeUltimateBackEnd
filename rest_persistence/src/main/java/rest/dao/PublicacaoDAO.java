@@ -24,19 +24,21 @@ public class PublicacaoDAO {
 
 	private static Connection connection = DbUtil.getConnection();
 
-	public static Publicacao addPublicacao(String texto, int id_user, int id, int likes, InputStream input) {
+//	Para manipular Posts
+	public static Publicacao addPublicacao(String texto, int id_user, int likes, InputStream input) {
 		try {
-			PreparedStatement pStmt = connection.prepareStatement("insert into publicacao(texto, id_user, id, likes, image) values (?, ?, ?, ?, ?)",
+			PreparedStatement pStmt = connection.prepareStatement("insert into publicacao(texts, id_users, likes) values (?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 			pStmt.setString(1, texto);
 			pStmt.setInt(2, id_user);
-			pStmt.setInt(3, id);
-			pStmt.setInt(4, likes);
+			//pStmt.setString(2, id_user);
+			pStmt.setInt(3, likes);
 			pStmt.executeUpdate();
 			ResultSet rs = pStmt.getGeneratedKeys();
 			if (rs.next()) {
 				uploadFile(input, rs.getInt("id"));
-				return new Publicacao(rs.getString("texto"), rs.getInt("id_user"), rs.getInt("id"), rs.getInt("likes"), rs.getString("image"));
+				
+				return new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), null ,rs.getInt("id"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -45,17 +47,20 @@ public class PublicacaoDAO {
 		return null;
 	}
 
-	public static Publicacao updatePublicacao(int id, int likes, InputStream input) {
+	public static Publicacao updatePublicacao(int id, String texto, int id_user, int likes, InputStream input) {
 		try {
-			PreparedStatement pStmt = connection.prepareStatement("update publicacao set id=?, likes=? where id=?",
+			PreparedStatement pStmt = connection.prepareStatement("update publicacao set texts=?, id_users=?, likes=? where id=?",
 					Statement.RETURN_GENERATED_KEYS);
-			pStmt.setInt(1, id);
-			pStmt.setInt(2, likes);
+			pStmt.setString(1, texto);
+			pStmt.setInt(2, id_user);
+			pStmt.setInt(3, likes);
+			pStmt.setInt(4, id);
 			pStmt.executeUpdate();
 			ResultSet rs = pStmt.getGeneratedKeys();
-			if(rs.next()) {
-				uploadFile(input, rs.getInt("id"));
-					return new Publicacao(rs.getInt(likes)+1);
+			if (rs.next()) {
+				if(input != null)
+					uploadFile(input, rs.getInt("id"));
+				return new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), null,rs.getInt("id"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -64,7 +69,7 @@ public class PublicacaoDAO {
 		return null;
 	}
 
-	public static void deletePublicacao(int id) {
+	public static void deletePosts(int id) {
 		try {
 			PreparedStatement pStmt = connection.prepareStatement("delete from publicacao where id=?");
 			pStmt.setInt(1, id);
@@ -74,29 +79,31 @@ public class PublicacaoDAO {
 		}
 	}
 
-	public static List<Publicacao> getPublicacao() {
-		List<Publicacao> publicacao = new ArrayList<Publicacao>();
+	public static List<Publicacao> getAllPosts() {
+		List<Publicacao> post = new ArrayList<Publicacao>();
 		try {
 			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery("select * from publicacao order by id");
+			ResultSet rs = stmt.executeQuery("SELECT post.id, post.likes,post.id_users, u.username, post.texts" + 
+					" FROM publicacao post, users u WHERE post.id_users = u.id");
 			while (rs.next()) {
-				Publicacao publica = new Publicacao(rs.getString("texto"), rs.getInt("id_user"), rs.getInt("id"), rs.getInt("likes"), rs.getString("image"));
-				publicacao.add(publica);
+				Publicacao publi = new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), rs.getString("username"),rs.getInt("id"));
+				post.add(publi);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return publicacao;
+		return post;
 	}
-
-	public static Publicacao getPublicacao(int id) {
+	
+	public static Publicacao getPost(int id) {
 		try {
-			PreparedStatement pStmt = connection.prepareStatement("select * from publicacao where id=?");
+			PreparedStatement pStmt = connection.prepareStatement("SELECT post.id, post.likes,post.id_users, u.username, post.texts" + 
+										" FROM publicacao post, users u WHERE post.id_users = u.id AND post = ?");
 			pStmt.setInt(1, id);
 			ResultSet rs = pStmt.executeQuery();
 			if (rs.next()) {
-				return new Publicacao(rs.getString("texto"), rs.getInt("id_user"), rs.getInt("id"), rs.getInt("likes"), rs.getString("image"));
+				return new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), rs.getString("username"),rs.getInt("id"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -104,35 +111,18 @@ public class PublicacaoDAO {
 
 		return null;
 	}
-
-	public static Publicacao getPublicacaoByUsername(String username) {
-		try {
-			PreparedStatement pStmt = connection.prepareStatement("select * from publicacao where username=?");
-			pStmt.setString(1, username);
-			ResultSet rs = pStmt.executeQuery();
-			if (rs.next()) {
-				return new Publicacao(rs.getString("texto"), rs.getInt("id_user"), rs.getInt("id"), rs.getInt("likes"), rs.getString("image"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	private static void uploadFile(InputStream uploadedInputStream, int id) {
 		try {
 			InputStream inputStream = DbUtil.class.getClassLoader().getResourceAsStream("uploads.properties");
 			Properties prop = new Properties();
 			prop.load(inputStream);
 			String folder = prop.getProperty("folder");
-			String filePath = folder + id;
+			String filePath = folder + id ;//+ "user";
 			saveFile(uploadedInputStream, filePath);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
 	private static void saveFile(InputStream uploadedInputStream, String serverLocation) {
 
 		try {

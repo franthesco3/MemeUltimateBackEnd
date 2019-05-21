@@ -22,19 +22,6 @@ import javax.ws.rs.core.Response.Status;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
-<<<<<<< HEAD
-import rest.dao.UserDAO;
-import rest.model.Publicacao;
-
-@Path("/posts")
-public class PublicacaoService {
-
-
-	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public List<Publicacao> getPosts() {
-		return UserDAO.getAllPosts();
-=======
 import rest.dao.PublicacaoDAO;
 import rest.dao.UserDAO;
 import rest.model.Publicacao;
@@ -42,24 +29,20 @@ import rest.model.User;
 
 @Path("/publicacao")
 public class PublicacaoService {
-	private static Publicacao p;
-
+	private Publicacao p;
+	// Controle da resposta (status code, mensagem)
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Publicacao> getPublicacao() {
-		return PublicacaoDAO.getPublicacao();
->>>>>>> c76dbdff49b573d369e9dca160d5d04c2bccc733
+		return PublicacaoDAO.getAllPosts();
 	}
-
-	// Controle da resposta (status code, mensagem)
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-<<<<<<< HEAD
 	public Response getPost(@PathParam("id") int id) {
-		return Response.status(Status.OK).entity(UserDAO.getPost(id)).build();
+		return Response.status(Status.OK).entity(PublicacaoDAO.getPost(id)).build();
 	}
-/*
+/*ha nescessidade???
 	@GET
 	@Path("/search")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -79,12 +62,10 @@ public class PublicacaoService {
             
         }
        // System.out.println("iaiaiiaiia, chegou aqui");
-        return Response.status(Status.OK).entity(UserDAO.addPost(texto,idUsers, like,  uploadedInputStream)).build();
-=======
-	public Response gePublicacao(@PathParam("id") int id) {
-		return Response.status(Status.OK).entity(PublicacaoDAO.getPublicacao(id)).build();
-	}
+        return Response.status(Status.OK).entity(PublicacaoDAO.addPublicacao(texto,idUsers, like,  uploadedInputStream)).build();
 
+    }
+/*
 	@GET
 	@Path("/search")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -92,55 +73,34 @@ public class PublicacaoService {
 
 		return PublicacaoDAO.getPublicacaoByUsername(texto);
 	}
-
-    @POST
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response addPublicacao(@FormDataParam("image") InputStream uploadedInputStream,
-            @FormDataParam("texto") String texto, @FormDataParam("id_user") int id_user,  @FormDataParam("id")int id,  @FormDataParam("likes") int likes) {
-        
-        return Response.status(Status.OK).entity(PublicacaoDAO.addPublicacao(texto, id_user, id, likes, null)).build();
->>>>>>> c76dbdff49b573d369e9dca160d5d04c2bccc733
-    }
-
+*/
 	@PUT
 	@Path("/{id}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-<<<<<<< HEAD
-	public Publicacao updateUser(@PathParam("id") int id, @FormDataParam("image") InputStream uploadedInputStream,
-			@FormDataParam("image") FormDataContentDisposition contentDispositionHeader,
-			@FormDataParam("texto") String texto, @FormDataParam("idUsers") int idUsers, @FormDataParam("like") int like) {
-		
-		if(contentDispositionHeader.getFileName() == null) {
-			return UserDAO.updatePost(id, texto,idUsers, like, null);	
-		} else {
-			return UserDAO.updatePost(id,texto,idUsers, like, uploadedInputStream);
-		}
-	}
-=======
 	public Publicacao updatePublicacao(@PathParam("texto") String texto, @PathParam("id_user") int id_user, @PathParam("id") int id, @FormDataParam("image") InputStream uploadedInputStream,
 			@FormDataParam("image") FormDataContentDisposition contentDispositionHeader,
 			@FormDataParam("likes") int likes) {
-				if(contentDispositionHeader.getFileName() == null) {
-					if(p.getlikes() == true) return PublicacaoDAO.updatePublicacao(id, likes, null);
-				}else {
-				return PublicacaoDAO.addPublicacao(texto, id, id_user,likes, uploadedInputStream);
-				}
-				return null;
-			}
->>>>>>> c76dbdff49b573d369e9dca160d5d04c2bccc733
+	
+		if(contentDispositionHeader.getFileName() == null) {
+			if(p.getlikes() == true) 
+				return PublicacaoDAO.updatePublicacao( id, texto, id_user, likes, null);
+			//return PublicacaoDAO.updatePublicacao(id, likes, null);
+			
+		}else {
+			//não seria melhor assim???
+			return PublicacaoDAO.updatePublicacao(id, texto, id_user,likes, uploadedInputStream);
+			//return PublicacaoDAO.addPublicacao(texto, id, id_user,likes, uploadedInputStream);
+		}
+		return null;
+	}
+
 
 	@DELETE
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-<<<<<<< HEAD
 	public void deletePost(@PathParam("id") int id) {
-		UserDAO.deletePosts(id);
-=======
-	public void deleteUser(@PathParam("id") int id) {
-		PublicacaoDAO.deletePublicacao(id);
->>>>>>> c76dbdff49b573d369e9dca160d5d04c2bccc733
+		PublicacaoDAO.deletePosts(id);
 	}
 	
 	//Session
@@ -163,9 +123,5 @@ public class PublicacaoService {
         
         return Response.status(Status.OK).entity(foo.toString()).build();
     }
-<<<<<<< HEAD
+}
 
-}
-=======
-}
->>>>>>> c76dbdff49b573d369e9dca160d5d04c2bccc733

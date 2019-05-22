@@ -55,8 +55,10 @@ public class UserService {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response addUser(@FormDataParam("image") InputStream uploadedInputStream,
             @FormDataParam("username") String username, @FormDataParam("password") String password,  @FormDataParam("email") String email,  @FormDataParam("telefone") String telefone,  @FormDataParam("data") String data) {
-        if(username == null || password == null || username.equals("null") || password.equals("null")) {
+        
+    	if(username == null || password == null || username.equals("null") || password.equals("null")) {
         	System.out.println("Campos vazios, entre com valores válidos !");
+        	
         	return Response.status(400).build();
         } 
         if(UserDAO.getUserByUsername(username) != null) {

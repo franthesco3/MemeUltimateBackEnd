@@ -39,8 +39,8 @@ public class PublicacaoService {
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response getPost(@PathParam("id") int id) {
-		return Response.status(Status.OK).entity(PublicacaoDAO.getPost(id)).build();
+	public List<Publicacao> getPost(@PathParam("id") int id) {
+		return PublicacaoDAO.getPost(id);
 	}
 /*ha nescessidade???
 	@GET

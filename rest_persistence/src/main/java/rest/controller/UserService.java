@@ -58,10 +58,17 @@ public class UserService {
         if(username == null || password == null || username.equals("null") || password.equals("null")) {
         	System.out.println("Campos vazios, entre com valores válidos !");
         	return Response.status(400).build();
-        } if(UserDAO.getUserByUsername(username) != null) {
+        } 
+        if(UserDAO.getUserByUsername(username) != null) {
         	System.out.println("Usuário ja existente, tente outros dados!");
-        	return Response.status(400).build();
+        	return Response.status(400).build();	
+        }
+        
+        System.out.println("valor de 'image':"+uploadedInputStream);
+        
+        if(uploadedInputStream != null) {
         	
+        	//uploadedInputStream = "";
         }
         return Response.status(Status.OK).entity(UserDAO.addUser(username, password, email, telefone, data,  uploadedInputStream)).build();
     }

@@ -134,6 +134,7 @@ public class UserDAO {
 			prop.load(inputStream);
 			String folder = prop.getProperty("folder");
 			String filePath = folder + id + "user";
+			System.out.println("O valor de filePath:"+filePath);
 			saveFile(uploadedInputStream, filePath);
 		} catch (Exception e) {
 			e.printStackTrace();

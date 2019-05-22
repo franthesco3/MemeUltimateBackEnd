@@ -96,15 +96,23 @@ public class PublicacaoDAO {
 		return post;
 	}
 	
-	public static Publicacao getPost(int id) {
+	public static  List<Publicacao>  getPost(int id) {
 		try {
+			/*O que essa consulta faz?
+			 * Ela me retorna todos as publicacoes que foram postadas
+			 * por um determinado usuario e em ordem Decrecente
+			 * */
+			List<Publicacao> post = new ArrayList<Publicacao>();
 			PreparedStatement pStmt = connection.prepareStatement("SELECT post.id, post.likes,post.id_users, u.username, post.texts" + 
-										" FROM publicacao post, users u WHERE post.id_users = u.id AND post = ?");
+										" FROM publicacao post, users u WHERE post.id_users = u.id AND  u.id = ? ORDER BY post.id DESC");
 			pStmt.setInt(1, id);
 			ResultSet rs = pStmt.executeQuery();
-			if (rs.next()) {
-				return new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), rs.getString("username"),rs.getInt("id"));
+			
+			while (rs.next()) {
+				Publicacao publi = new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), rs.getString("username"),rs.getInt("id"));
+				post.add(publi);
 			}
+			return post;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

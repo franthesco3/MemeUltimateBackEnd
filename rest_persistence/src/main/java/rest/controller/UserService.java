@@ -68,9 +68,9 @@ public class UserService {
         
         System.out.println("valor de 'image':"+uploadedInputStream);
         
-        if(uploadedInputStream != null) {
+        if(uploadedInputStream == null) {
         	
-        	//uploadedInputStream = "";
+        	//uploadedInputStream = "C:\\Users\\usuario eu\\Documents\\GitHub\\RedeSocialMemeUltimate\\img\\semImgPerfil.jpg";
         }
         return Response.status(Status.OK).entity(UserDAO.addUser(username, password, email, telefone, data,  uploadedInputStream)).build();
     }

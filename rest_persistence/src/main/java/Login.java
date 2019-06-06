@@ -75,7 +75,7 @@ public class Login extends HttpServlet {
             	response.getWriter().print(String.valueOf(user.getId()));
                 response.setStatus(200);
             } else {
-                response.setStatus(401);
+                response.setStatus(400);
             }
         } else {
             response.setStatus(401);

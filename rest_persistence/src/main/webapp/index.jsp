@@ -10,5 +10,7 @@
 <p style="text-indent:20px;">/publicacao</p>
 	<h3 style="text-indent:40px;">For search by publicacao:</h3>
 	<p style="text-indent:40px;">/search?publicacao={publicacao}</p>
+	
+<p style="text-indent:20px;">/coments</p>
 </body>
 </html>

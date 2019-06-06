@@ -84,7 +84,7 @@ public class PublicacaoDAO {
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT post.id, post.likes,post.id_users, u.username, post.texts" + 
-					" FROM publicacao post, users u WHERE post.id_users = u.id");
+					" FROM publicacao post, users u WHERE post.id_users = u.id ORDER BY post.id DESC");
 			while (rs.next()) {
 				Publicacao publi = new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), rs.getString("username"),rs.getInt("id"));
 				post.add(publi);

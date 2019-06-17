@@ -1,17 +1,33 @@
 package rest.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
+@Entity
+@Table(name="comentarios")
 @XmlRootElement(name = "coments")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Coments {
 	
-	public int id;
+	
+	@Id
+	@GeneratedValue
+	private int id;
+
+	@Column(columnDefinition="bigint")
 	public int id_users;
+	@Column(columnDefinition="bigint")
 	public int id_publicacao;
+	@Column(columnDefinition="text")
 	public String comentario;
+	@Column(columnDefinition="text")
 	public String username;
 	
 	public Coments() {

@@ -73,6 +73,12 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.3.6</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-agroal</artifactId>
+			<version>5.3.10.Final</version>
+			<type>pom</type>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>rest_persistence</finalName>

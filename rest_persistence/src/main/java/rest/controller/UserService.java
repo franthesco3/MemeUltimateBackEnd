@@ -23,33 +23,39 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
 import rest.dao.UserDAO;
+import rest.dao.UserDAOHibernate;
 import rest.model.User;
 
 @Path("/users")
 public class UserService {
-
+	/*Oi frathesco, alterei essa classe para que ja trabalhe com o HIbernate,bjs*/
+	
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<User> getUsers() {
-		return UserDAO.getAllUsers();
+		//return UserDAO.getAllUsers();
+		return UserDAOHibernate.getUser();
 	}
 
 	// Controle da resposta (status code, mensagem)
+
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getUser(@PathParam("id") int id) {
-		return Response.status(Status.OK).entity(UserDAO.getUser(id)).build();
+		//	return Response.status(Status.OK).entity(UserDAO.getUser(id)).build();
+		return Response.status(Status.OK).entity(UserDAOHibernate.getUser(id)).build();
 	}
-
+	
 	@GET
 	@Path("/search")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public User getUserByName(@QueryParam("username") String username) {
+		//	return UserDAO.getUserByUsername(username);
+		return UserDAOHibernate.getUserByUsername(username);
+	} 
 
-		return UserDAO.getUserByUsername(username);
-	}
-
+	/*
     @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -74,7 +80,32 @@ public class UserService {
         }
         return Response.status(Status.OK).entity(UserDAO.addUser(username, password, email, telefone, data,  uploadedInputStream)).build();
     }
-
+*/
+	@POST
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response addUser(@FormDataParam("image") InputStream uploadedInputStream,
+            @FormDataParam("username") String username, @FormDataParam("password") String password,  @FormDataParam("email") String email,  @FormDataParam("telefone") String telefone,  @FormDataParam("data") String data) {
+        
+    	if(username == null || password == null || username.equals("null") || password.equals("null")) {
+        	System.out.println("Campos vazios, entre com valores válidos !");
+        	
+        	return Response.status(400).build();
+        } 
+        if(UserDAOHibernate.getUserByUsername(username) != null) {
+        	System.out.println("Usuário ja existente, tente outros dados!");
+        	return Response.status(400).build();	
+        }
+        
+        System.out.println("valor de 'image':"+uploadedInputStream);
+        
+        if(uploadedInputStream == null) {
+        	
+        	//uploadedInputStream = "C:\\Users\\usuario eu\\Documents\\GitHub\\RedeSocialMemeUltimate\\img\\semImgPerfil.jpg";
+        }
+        
+        return Response.status(Status.OK).entity(UserDAOHibernate.addUser(new User(username, password,email,telefone,data), uploadedInputStream)).build();
+    }
 	@PUT
 	@Path("/{id}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -84,9 +115,11 @@ public class UserService {
 			@FormDataParam("username") String username, @FormDataParam("password") String password, @FormDataParam("email") String email, @FormDataParam("telefone") String telefone, @FormDataParam("data") String data) {
 		
 		if(contentDispositionHeader.getFileName() == null) {
-			return UserDAO.updateUser(id, username, password, email, telefone, data, null);	
+			
+			//return UserDAO.updateUser(id, username, password, email, telefone, data, null);
+			return UserDAOHibernate.updateUser(new User(username, password,email,telefone,data), null);
 		} else {
-			return UserDAO.updateUser(id, username, password, email, telefone, data, uploadedInputStream);
+			return UserDAOHibernate.updateUser(new User(username, password,email,telefone,data), uploadedInputStream);
 		}
 	}
 
@@ -94,7 +127,8 @@ public class UserService {
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public void deleteUser(@PathParam("id") int id) {
-		UserDAO.deleteUser(id);
+		UserDAOHibernate.deleteUser(id);
+		//UserDAO.deleteUser(id);
 	}
 	
 	//Session

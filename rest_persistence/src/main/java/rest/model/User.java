@@ -2,22 +2,41 @@ package rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlAccessorType;
-
 import java.util.ArrayList;
-
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+ 
+@Entity
+@Table(name="users")
 @XmlRootElement(name = "user")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class User {
+	/*Dicas para trabalhar com o hibernate;
+	 * 1 - Por algum motivo, não permite criação de tabelas com letras maiusculas
+	 * 2 - Mapei todas as variaveis que devem ser criadas no BD
+	 * */
 	
+	@Id
+	@GeneratedValue
 	private int id;
+	
+	@Column(columnDefinition="text")
 	private String username;
+	@Column(columnDefinition="text")
 	private String password;
+	@Column(columnDefinition="text")
 	private String email;
+	@Column(columnDefinition="text")
 	private String telefone;
+	@Column(columnDefinition="text")
 	private String data;
-	private ArrayList<Publicacao> publicacao = new ArrayList<Publicacao>();
+	
+	//private ArrayList<Publicacao> publicacao = new ArrayList<Publicacao>();
 	
 	public User() {
 		
@@ -26,6 +45,16 @@ public class User {
 	public User(int id, String username, String password, String email, String telefone, String data) {
 		super();
 		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.telefone = telefone;
+		this.data = data;
+		
+	}
+	public User( String username, String password, String email, String telefone, String data) {
+		super();
+		
 		this.username = username;
 		this.password = password;
 		this.email = email;
@@ -81,11 +110,11 @@ public class User {
 	public void setData(String data) {
 		this.data = data;
 	}
-	
+	/*
 	public ArrayList getPublicacao() {
 		return publicacao;
 	}
-	
+	*/
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + "]";

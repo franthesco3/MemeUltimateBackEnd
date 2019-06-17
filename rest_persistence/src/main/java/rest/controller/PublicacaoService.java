@@ -83,7 +83,7 @@ public class PublicacaoService {
 			@FormDataParam("likes") int likes) {
 	
 		if(contentDispositionHeader.getFileName() == null) {
-			if(p.getlikes() == true) 
+			//if(p.getlikes() == true) 
 				return PublicacaoDAO.updatePublicacao( id, texto, id_user, likes, null);
 			//return PublicacaoDAO.updatePublicacao(id, likes, null);
 			
@@ -92,7 +92,7 @@ public class PublicacaoService {
 			return PublicacaoDAO.updatePublicacao(id, texto, id_user,likes, uploadedInputStream);
 			//return PublicacaoDAO.addPublicacao(texto, id, id_user,likes, uploadedInputStream);
 		}
-		return null;
+		//return null;
 	}
 
 

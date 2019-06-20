@@ -56,7 +56,7 @@ public class PublicacaoDAOHibernate {
 
 	public static List<Publicacao> getPublicacao(int id) {//realizando consultas
 		//pegando todas as postagens de um derterminado usuario
-		List<Publicacao> encontrada = getQuery("from Publicacao where id_users = " + id);
+		List<Publicacao> encontrada = getQuery("from Publicacao where id_users = " + id+" ORDER BY id DESC");
 		return encontrada.isEmpty() ? null : encontrada;
 	}
 	

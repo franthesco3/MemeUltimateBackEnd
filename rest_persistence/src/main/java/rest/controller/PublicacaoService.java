@@ -22,8 +22,8 @@ import javax.ws.rs.core.Response.Status;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
-import rest.dao.PublicacaoDAO;
-import rest.dao.UserDAO;
+import rest.DAOHibernate.PublicacaoDAOHibernate;
+import rest.DAOHibernate.UserDAOHibernate;
 import rest.model.Publicacao;
 import rest.model.User;
 
@@ -34,13 +34,14 @@ public class PublicacaoService {
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Publicacao> getPublicacao() {
-		return PublicacaoDAO.getAllPosts();
+		//return PublicacaoDAO.getAllPosts();
+		return PublicacaoDAOHibernate.getAllPublicacao();
 	}
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Publicacao> getPost(@PathParam("id") int id) {
-		return PublicacaoDAO.getPost(id);
+		return PublicacaoDAOHibernate.getPublicacao(id);
 	}
 /*ha nescessidade???
 	@GET
@@ -55,14 +56,15 @@ public class PublicacaoService {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response addPost(@FormDataParam("image") InputStream uploadedInputStream,
-            @FormDataParam("texto") String texto, @FormDataParam("like") int like,  @FormDataParam("idUsers") int idUsers) {
+            @FormDataParam("texto") String texto, @FormDataParam("like") int like,  @FormDataParam("idUsers") int idUsers,
+            @FormDataParam("username") String username) {
 
         if(texto == null || idUsers == 0 ) {
             return Response.status(400).build();
             
         }
        // System.out.println("iaiaiiaiia, chegou aqui");
-        return Response.status(Status.OK).entity(PublicacaoDAO.addPublicacao(texto,idUsers, like,  uploadedInputStream)).build();
+        return Response.status(Status.OK).entity(PublicacaoDAOHibernate.addPublicacao(new Publicacao(0, texto,  idUsers  ,  like, username),  uploadedInputStream)).build();
 
     }
 /*
@@ -80,16 +82,16 @@ public class PublicacaoService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Publicacao updatePublicacao(@PathParam("texto") String texto, @PathParam("id_user") int id_user, @PathParam("id") int id, @FormDataParam("image") InputStream uploadedInputStream,
 			@FormDataParam("image") FormDataContentDisposition contentDispositionHeader,
-			@FormDataParam("likes") int likes) {
+			@FormDataParam("likes") int likes,@FormDataParam("username") String username) {
 	
 		if(contentDispositionHeader.getFileName() == null) {
 			//if(p.getlikes() == true) 
-				return PublicacaoDAO.updatePublicacao( id, texto, id_user, likes, null);
+				return PublicacaoDAOHibernate.updatePublicacao(new Publicacao(id, texto,  id_user  ,  likes, username), null);
 			//return PublicacaoDAO.updatePublicacao(id, likes, null);
 			
 		}else {
 			//não seria melhor assim???
-			return PublicacaoDAO.updatePublicacao(id, texto, id_user,likes, uploadedInputStream);
+			return PublicacaoDAOHibernate.updatePublicacao(new Publicacao(id, texto,  id_user  ,  likes, username), uploadedInputStream);
 			//return PublicacaoDAO.addPublicacao(texto, id, id_user,likes, uploadedInputStream);
 		}
 		//return null;
@@ -100,7 +102,7 @@ public class PublicacaoService {
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public void deletePost(@PathParam("id") int id) {
-		PublicacaoDAO.deletePosts(id);
+		PublicacaoDAOHibernate.deletePublicacao(id);
 	}
 	
 	//Session

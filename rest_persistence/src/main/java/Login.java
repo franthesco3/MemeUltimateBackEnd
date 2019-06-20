@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
- 
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +12,8 @@ import javax.servlet.http.HttpSession;
 import org.json.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
- 
+
+import rest.DAOHibernate.UserDAOHibernate;
 import rest.dao.UserDAO;
 import rest.model.User;
  
@@ -68,18 +70,21 @@ public class Login extends HttpServlet {
         System.err.println("user:"+aux.getUsername()+", senha:"+aux.getPassword());
 
         if (aux != null) {
-            User user = UserDAO.getUserByUsername(aux.getUsername());
-               System.out.println("Valor do User: "+user);
+        	List<User> apoio = UserDAOHibernate.getUserByUsername(aux.getUsername());
+            User user = apoio != null ? apoio.get(0) : null;
+               
+            System.out.println("Valor do User: "+user);
             if (user != null && user.getPassword().equals(aux.getPassword())) {
+            	
             	System.out.println("I, deu certo: "+user);
             	response.getWriter().print(String.valueOf(user.getId()));
                 response.setStatus(200);
             } else {
                 response.setStatus(400);
             }
-        } else {
+        } else 
             response.setStatus(401);
-        }
+        
     }
  
     private User getUser(JSONObject jsonObject) {

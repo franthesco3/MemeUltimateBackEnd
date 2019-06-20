@@ -1,4 +1,4 @@
-package rest.dao;
+package rest.DAOHibernate;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,11 +35,21 @@ public class UserDAOHibernate {
 		manager.getTransaction().begin();
 		manager.persist(user);
 		manager.getTransaction().commit();
-		//Erro aqui, como pegar o id do cara que acabou de ser inserido??
-		uploadFile(input, user.getId());
+		int id = getIdUser(user.getUsername()) ;
+		
+		if(id != -1 ) uploadFile(input, id );	
+		else System.err.println("Erro ao regastar o id do novo usuario!");
+		
 		closeConection();
 		return user;
 	}
+	
+	private static int getIdUser(String username) {
+		
+		List<User> encontrada = getUserByUsername(username);
+		return encontrada.isEmpty()?  -1 : encontrada.get(0).getId();
+	}
+
 	public static User getUser(int id) {//get por id
 		openConection();
 		User encontrada = manager.find(User.class, id);
@@ -47,27 +57,28 @@ public class UserDAOHibernate {
 		return encontrada;
 	}
 	
-	public static List<User> getUser() {
-		openConection();
-		List<User> encontradas = manager.createQuery("from users",
-		User.class).getResultList();
-		closeConection();
-		return encontradas;
+	public static List<User> getAllUser() {
+		
+		List<User> encontrada = getQuery("from User");
+		return encontrada.isEmpty() ? null : encontrada;
 	}
 	
-	public static User getUserByUsername(String username) {
+	public static List<User> getUserByUsername(String username) {
 
-		openConection();
-		User encontrada = manager.createQuery("from User where username = " +
-		username, User.class).getResultList().get(0);
-		closeConection();
-		return encontrada;
+		List<User> encontrada = getQuery("from User where username = '" +
+				username+"'");
+		
+		return encontrada.isEmpty() ? null : encontrada;
 	}
 	public static User getUserByQuery(int id) {//realizando consultas
 		
+		List<User> encontrada = getQuery("from User where id = " + id);
+		return encontrada.isEmpty() ? null : encontrada.get(0);
+	}
+	
+	private static List<User> getQuery(String sql){
 		openConection();
-		User encontrada = manager.createQuery("from User where id = " +
-		id, User.class).getResultList().get(0);
+		List<User> encontrada = manager.createQuery(sql , User.class).getResultList();
 		closeConection();
 		return encontrada;
 	}
@@ -78,8 +89,11 @@ public class UserDAOHibernate {
 		manager.getTransaction().begin();
 		manager.merge(user);
 		manager.getTransaction().commit();
-		///???????????????????????????????????????
-		uploadFile(input, user.getId());
+		int id = getIdUser(user.getUsername()) ;
+		
+		if(id != -1 ) uploadFile(input, id );	
+		else System.err.println("Erro ao regastar o id do novo usuario!");
+		
 		closeConection();
 		return user;
 	}

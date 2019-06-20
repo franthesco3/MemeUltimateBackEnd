@@ -22,8 +22,8 @@ import javax.ws.rs.core.Response.Status;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
+import rest.DAOHibernate.UserDAOHibernate;
 import rest.dao.UserDAO;
-import rest.dao.UserDAOHibernate;
 import rest.model.User;
 
 @Path("/users")
@@ -34,7 +34,7 @@ public class UserService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<User> getUsers() {
 		//return UserDAO.getAllUsers();
-		return UserDAOHibernate.getUser();
+		return UserDAOHibernate.getAllUser();
 	}
 
 	// Controle da resposta (status code, mensagem)
@@ -52,7 +52,7 @@ public class UserService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public User getUserByName(@QueryParam("username") String username) {
 		//	return UserDAO.getUserByUsername(username);
-		return UserDAOHibernate.getUserByUsername(username);
+		return null;//UserDAOHibernate.getUserByUsername(username);
 	} 
 
 	/*
@@ -93,7 +93,7 @@ public class UserService {
         	return Response.status(400).build();
         } 
         if(UserDAOHibernate.getUserByUsername(username) != null) {
-        	System.out.println("Usuário ja existente, tente outros dados!");
+        	System.out.println("Usuário ja existente, tente outros dados!\n"+UserDAOHibernate.getUserByUsername(username));
         	return Response.status(400).build();	
         }
         

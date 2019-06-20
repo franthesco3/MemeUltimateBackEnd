@@ -21,19 +21,19 @@ public class Publicacao {
 	private int id;
 	
 	@Column(columnDefinition="text")
-	private String texto;
+	private String texts;
 	
 	@Column(columnDefinition="bigint")
-	private int id_user;
+	private int id_users;
 	
 	@Column(columnDefinition="bigint")
 	private int likes;
 	@Column(columnDefinition="text")
 	private String username;
-	
+	/*
 	@Column(columnDefinition="text")
 	private String image;
-	
+	*/
 	//private boolean click = false;
 	
 //>>>>>>> c76dbdff49b573d369e9dca160d5d04c2bccc733
@@ -46,21 +46,23 @@ public class Publicacao {
 		this.likes = likes;
 	}
 	
-	public Publicacao(String texto, int id_user, int id, int likes, String username,int image) {
-		this.texto = texto;
-		this.likes = likes;
-		this.id = id;
-		this.id_user = id_user;
-		this.username = username;
-		this.image = ""+image;//converter int para String
-	}
 	
+	
+	public Publicacao(int id, String texts, int id_users, int likes, String username) {
+		
+		this.id = id;
+		this.texts = texts;
+		this.id_users = id_users;
+		this.likes = likes;
+		this.username = username;
+	}
+
 	public String getTexto() {
-		return texto;
+		return texts;
 	}
 	
 	public void setTexto(String texto) {
-		this.texto = texto;
+		this.texts = texto;
 	}
 	
 	public String getUsername() {
@@ -80,25 +82,19 @@ public class Publicacao {
 	}
 	
 	public int getId_user() {
-		return id_user;
+		return id_users;
 	}
 	
 	public void setId_user(int id_user) {
-		this.id_user = id_user;
+		this.id_users = id_user;
 	}
 
 	@Override
 	public String toString() {
-		return "Publicacao [texto=" + texto + ", id_user=" + id_user + ", id=" + id + ", likes=" + likes + " username = "+username+"]";
+		return "Publicacao [texto=" + texts + ", id_user=" + id_users + ", id=" + id + ", likes=" + likes + " username = "+username+"]";
 	}
 	
-	public String getImage() {
-		return image;
-	}
-	
-	public void setImage(String Image) {
-		this.image = image;
-	}
+
 	/*
 	public boolean getlikes() {
 		if(click == true) return true;

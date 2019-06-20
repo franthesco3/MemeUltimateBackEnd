@@ -63,6 +63,7 @@ public class PublicacaoService {
             return Response.status(400).build();
             
         }
+        System.out.println(username);
        // System.out.println("iaiaiiaiia, chegou aqui");
         return Response.status(Status.OK).entity(PublicacaoDAOHibernate.addPublicacao(new Publicacao(0, texto,  idUsers  ,  like, username),  uploadedInputStream)).build();
 

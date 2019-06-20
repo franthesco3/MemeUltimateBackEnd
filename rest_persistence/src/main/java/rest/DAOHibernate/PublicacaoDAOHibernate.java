@@ -44,19 +44,19 @@ public class PublicacaoDAOHibernate {
 	private static int getIdPublicacao(String username, String texto) {
 
 		List<Publicacao> encontrada = getQuery("from Publicacao where username = '" +
-				username+"' and texto = '"+texto+"'");
+				username+"' and texts = '"+texto+"'");
 		
 		return encontrada.isEmpty()?  -1 : encontrada.get(0).getId();
 	}
 	public static List<Publicacao> getAllPublicacao() {
 		
-		List<Publicacao> encontrada = getQuery("from Publicacao");
+		List<Publicacao> encontrada = getQuery("from Publicacao ORDER BY id DESC");
 		return encontrada.isEmpty() ? null : encontrada;
 	}	
 
 	public static List<Publicacao> getPublicacao(int id) {//realizando consultas
-		
-		List<Publicacao> encontrada = getQuery("from Publicacao where id = " + id);
+		//pegando todas as postagens de um derterminado usuario
+		List<Publicacao> encontrada = getQuery("from Publicacao where id_users = " + id);
 		return encontrada.isEmpty() ? null : encontrada;
 	}
 	

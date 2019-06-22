@@ -79,6 +79,7 @@
 			<version>5.3.10.Final</version>
 			<type>pom</type>
 		</dependency>
+		
 	</dependencies>
 	<build>
 		<finalName>rest_persistence</finalName>

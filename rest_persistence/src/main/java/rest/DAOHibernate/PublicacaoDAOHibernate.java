@@ -41,6 +41,13 @@ public class PublicacaoDAOHibernate {
 		return publicacao;
 	}
 	
+	public static List<Publicacao> search(String str){
+		return getQuery("from Publicacao where texts like '%"+str+"%' ORDER BY id DESC");
+	}
+	public static List<Publicacao> searchUsername(String str) {
+		
+		return getQuery("from Publicacao where username like '%"+str+"%' ORDER BY id DESC");
+	}
 	private static int getIdPublicacao(String username, String texto) {
 
 		List<Publicacao> encontrada = getQuery("from Publicacao where username = '" +
@@ -56,7 +63,7 @@ public class PublicacaoDAOHibernate {
 
 	public static List<Publicacao> getPublicacao(int id) {//realizando consultas
 		//pegando todas as postagens de um derterminado usuario
-		List<Publicacao> encontrada = getQuery("from Publicacao where id_users = " + id+" ORDER BY id DESC");
+		List<Publicacao> encontrada = getQuery("from Publicacao where id_users = " +id+" ORDER BY id DESC");
 		return encontrada.isEmpty() ? null : encontrada;
 	}
 	
@@ -129,5 +136,7 @@ public class PublicacaoDAOHibernate {
 			e.printStackTrace();
 		}
 	}
+
+	
 
 }

@@ -55,32 +55,7 @@ public class UserService {
 		return null;//UserDAOHibernate.getUserByUsername(username);
 	} 
 
-	/*
-    @POST
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response addUser(@FormDataParam("image") InputStream uploadedInputStream,
-            @FormDataParam("username") String username, @FormDataParam("password") String password,  @FormDataParam("email") String email,  @FormDataParam("telefone") String telefone,  @FormDataParam("data") String data) {
-        
-    	if(username == null || password == null || username.equals("null") || password.equals("null")) {
-        	System.out.println("Campos vazios, entre com valores válidos !");
-        	
-        	return Response.status(400).build();
-        } 
-        if(UserDAO.getUserByUsername(username) != null) {
-        	System.out.println("Usuário ja existente, tente outros dados!");
-        	return Response.status(400).build();	
-        }
-        
-        System.out.println("valor de 'image':"+uploadedInputStream);
-        
-        if(uploadedInputStream == null) {
-        	
-        	//uploadedInputStream = "C:\\Users\\usuario eu\\Documents\\GitHub\\RedeSocialMemeUltimate\\img\\semImgPerfil.jpg";
-        }
-        return Response.status(Status.OK).entity(UserDAO.addUser(username, password, email, telefone, data,  uploadedInputStream)).build();
-    }
-*/
+	
 	@POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes(MediaType.MULTIPART_FORM_DATA)

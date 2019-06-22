@@ -43,15 +43,21 @@ public class PublicacaoService {
 	public List<Publicacao> getPost(@PathParam("id") int id) {
 		return PublicacaoDAOHibernate.getPublicacao(id);
 	}
-/*ha nescessidade???
+
 	@GET
 	@Path("/search")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public User getUserByName(@QueryParam("username") String username) {
-
-		return UserDAO.getUserByUsername(username);
+	public List<Publicacao> searchPost(@QueryParam("values") String str) {
+		System.out.println("Conteudo da pesquisa "+str);
+		return PublicacaoDAOHibernate.search(str);
 	}
-*/
+	@GET
+	@Path("/username")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public List<Publicacao> usernamePost(@QueryParam("values") String str) {
+		System.out.println("Conteudo da pesquisa "+str);
+		return PublicacaoDAOHibernate.searchUsername(str);
+	}
     @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes(MediaType.MULTIPART_FORM_DATA)

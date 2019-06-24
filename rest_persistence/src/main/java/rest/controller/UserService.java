@@ -65,15 +65,19 @@ public class UserService {
             @FormDataParam("username") String username, @FormDataParam("password") String password,  @FormDataParam("email") String email,  @FormDataParam("telefone") String telefone,  @FormDataParam("data") String data) {
         
     	if(username == null || password == null || username.equals("null") || password.equals("null")) {
-        	System.out.println("Campos vazios, entre com valores válidos !");
+        	System.out.println("Campos vazios, entre com valores vï¿½lidos !");
         	
         	return Response.status(401).build();
         } 
         if(UserDAOHibernate.getUserByUsername(username) != null) {
-        	System.out.println("Usuário ja existente, tente outros dados!\n"+UserDAOHibernate.getUserByUsername(username));
+        	System.out.println("Usuï¿½rio ja existente, tente outros dados!\n"+UserDAOHibernate.getUserByUsername(username));
         	return Response.status(400).build();	
         }
         
+        if(data == null || data.equals("null") || telefone == null  || telefone.equals("null") || email == null  || email.equals(null)) {
+        	System.out.println("Algum dos campos de email, telefone ou data estï¿½o vazios");
+        	return Response.status(700).build();
+        }
         System.out.println("valor de 'image':"+uploadedInputStream);
         
         if(uploadedInputStream == null) {
@@ -90,15 +94,19 @@ public class UserService {
 	public User updateUser(@PathParam("id") int id, @FormDataParam("image") InputStream uploadedInputStream,
 			@FormDataParam("image") FormDataContentDisposition contentDispositionHeader,
 			@FormDataParam("username") String username, @FormDataParam("password") String password, @FormDataParam("email") String email, @FormDataParam("telefone") String telefone, @FormDataParam("data") String data) {
-		
-		
-		if(contentDispositionHeader.getFileName() == null) {
-			
+		//if(contentDispositionHeader.getFileName() == null) {
+		System.out.println("ola seu cabras");
+			if(username != null && email != null && telefone != null && data != null) {
+				User u = UserDAOHibernate.getUser(id);
+				System.out.println("atualizado; id: "+id);
+				System.out.println(u);
+				return UserDAOHibernate.updateUser(new User(username,u.getPassword(),email,telefone,data),null);
+			}
 			//return UserDAO.updateUser(id, username, password, email, telefone, data, null);
 			return UserDAOHibernate.updateUser(new User(username, password,email,telefone,data), null);
-		} else {
-			return UserDAOHibernate.updateUser(new User(username, password,email,telefone,data), uploadedInputStream);
-		}
+		//} else {
+			//return UserDAOHibernate.updateUser(new User(username, password,email,telefone,data), uploadedInputStream);
+		//}
 	}
 
 	@DELETE
@@ -109,7 +117,7 @@ public class UserService {
 		PublicacaoDAOHibernate.deletePubliIdUser(id);
 		ComentsDAOHibernate.deleteComentsIdUser(id);
 		UserDAOHibernate.deleteUser(id);
-		//não posso usar query 
+		//nï¿½o posso usar query 
 		//UserDAO.deleteUser(id);
 	}
 	

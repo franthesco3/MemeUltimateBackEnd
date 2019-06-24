@@ -94,19 +94,21 @@ public class UserService {
 	public User updateUser(@PathParam("id") int id, @FormDataParam("image") InputStream uploadedInputStream,
 			@FormDataParam("image") FormDataContentDisposition contentDispositionHeader,
 			@FormDataParam("username") String username, @FormDataParam("password") String password, @FormDataParam("email") String email, @FormDataParam("telefone") String telefone, @FormDataParam("data") String data) {
-		//if(contentDispositionHeader.getFileName() == null) {
-		System.out.println("ola seu cabras");
-			if(username != null && email != null && telefone != null && data != null) {
-				User u = UserDAOHibernate.getUser(id);
-				System.out.println("atualizado; id: "+id);
-				System.out.println(u);
-				return UserDAOHibernate.updateUser(new User(id, username,u.getPassword(),email,telefone,data),null);
-			}
-			//return UserDAO.updateUser(id, username, password, email, telefone, data, null);
-			return UserDAOHibernate.updateUser(new User(id, username, password,email,telefone,data), null);
-		//} else {
-			//return UserDAOHibernate.updateUser(new User(username, password,email,telefone,data), uploadedInputStream);
-		//}
+		
+		//System.out.println("ola seu cabras");
+		User user = UserDAOHibernate.getUser(id);
+		//atualizar os demais coisas
+		if(username != null && email != null && telefone != null && data != null) {
+			return UserDAOHibernate.updateUser(new User(id, username,user.getPassword(),email,telefone,data),null);
+		}
+		//atualizar so a senha
+		if(password != null) {
+			return UserDAOHibernate.updateUser(new User(id, user.getUsername(),password,user.getEmail(),user.getTelefone(),user.getData()),null);
+		}
+		//para atualizar so a imagem
+		UserDAOHibernate.uploadFile(uploadedInputStream, id);
+		return user;
+		
 	}
 
 	@DELETE

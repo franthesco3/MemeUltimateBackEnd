@@ -111,9 +111,9 @@ public class UserDAOHibernate {
 		closeConection();
 	}
 	
-
+	
 	//Para Manipular arquivos
-	private static void uploadFile(InputStream uploadedInputStream, int id) {
+	public static void uploadFile(InputStream uploadedInputStream, int id) {
 		try {
 			InputStream inputStream = DbUtil.class.getClassLoader().getResourceAsStream("uploads.properties");
 			Properties prop = new Properties();

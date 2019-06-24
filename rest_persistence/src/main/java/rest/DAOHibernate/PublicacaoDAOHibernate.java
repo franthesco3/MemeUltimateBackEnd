@@ -11,6 +11,8 @@ import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+//import javax.persistence.Query;
+import javax.persistence.Query;
 
 import rest.model.Publicacao;
 import rest.model.User;
@@ -20,12 +22,12 @@ public class PublicacaoDAOHibernate {
 	private static EntityManagerFactory factory;
 	private static EntityManager manager ;
 	
-	public static void openConection() {
+	private static void openConection() {
 		factory = Persistence.createEntityManagerFactory("tarefas");
 		manager = factory.createEntityManager();
 	}
 	
-	public static void closeConection() {
+	private static void closeConection() {
 		manager.close();
 		factory.close();	
 	}
@@ -33,7 +35,10 @@ public class PublicacaoDAOHibernate {
 	public static Publicacao addPublicacao(Publicacao publicacao, InputStream input) {
 
 		actionBD(publicacao,1,0);
+		
 		int id = getIdPublicacao(publicacao.getUsername(), publicacao.getTexto()) ;
+		
+		System.out.println("id da publicacao que acabou de ser inserida: "+id);
 		
 		if(id != -1 ) uploadFile(input, id );	
 		else System.err.println("Erro ao regastar o id do novo usuario!");
@@ -78,32 +83,53 @@ public class PublicacaoDAOHibernate {
 		actionBD(publicacao,2,0);
 		
 		int id = getIdPublicacao(publicacao.getUsername(), publicacao.getTexto()) ;
-		
-		if(id != -1 ) uploadFile(input, id );	
-		else System.err.println("Erro ao regastar o id da nova publicacao!");
-		
+		if(input != null) {
+			if(id != -1 ) uploadFile(input, id );	
+			else System.err.println("Erro ao regastar o id da nova publicacao!");
+		}
 		return publicacao;
 	}
-	
+	public static void updateUsername(String username, int id_user) {
+		List<Publicacao> post = getQuery("from Publicacao where id_users = "+id_user);
+		
+		for(Publicacao p : post) {
+			p.setUsername(username);
+			actionBD(p,2,p.getId());
+		}
+	}
 	public static void deletePublicacao(int id) {
 		actionBD(null,3,id);
 	}
 	public static void deletePubliIdUser(int idUser) {
 		openConection();
+		/*tenta esse codigo
+		String hql = "delete from Teste where nome = :nome";
+	        Query query = session.createQuery(hql);
+	        query.setString("nome","Testando a exclusão");
+	        query.executeUpdate(); // retorna a quantidade de linhas que foram afetadas.
+		*/
 		String sql = "DELETE FROM Publicacao " + 
 				"WHERE id_users = "+idUser;
-		List<Publicacao> encontrada = manager.createQuery(sql , Publicacao.class).getResultList();
-		System.out.println("Teste da delecao Premiada kkkkk ");
+	    Query query = manager.createQuery(sql);
+        //query.setString("nome","Testando a exclusão");
+        
+        int total = query.executeUpdate(); // retorna a quantidade de linhas que foram afetadas.
+	
+		//List<Publicacao> encontrada = manager.createQuery(sql , Publicacao.class).getResultList();
+		System.out.println("Teste da delecao Premiada kkkkk ; \n "
+				+ " Foram removidas "+total+" de linhas do banco");
 		closeConection();
 	}
 	
 	private static void actionBD(Publicacao publicacao, int opcao, int id) {
 		openConection();
 		manager.getTransaction().begin();
+		
 		if(opcao == 1) //insert
 			manager.persist(publicacao);
 		else if(opcao == 2) //update
 			manager.merge(publicacao);
+		
 		else {//delete
 			Publicacao encontrada = manager.find(Publicacao.class, id);
 			manager.remove(encontrada);
@@ -118,6 +144,7 @@ public class PublicacaoDAOHibernate {
 			Properties prop = new Properties();
 			prop.load(inputStream);
 			String folder = prop.getProperty("folder");
+			
 			String filePath = folder + id ;
 			System.out.println("O valor de filePath:"+filePath);
 			saveFile(uploadedInputStream, filePath);

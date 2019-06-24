@@ -101,12 +101,15 @@ public class UserService {
 		if(username != null && email != null && telefone != null && data != null) {
 			return UserDAOHibernate.updateUser(new User(id, username,user.getPassword(),email,telefone,data),null);
 		}
+		
 		//atualizar so a senha
-		if(password != null) {
+		if(password != null && username == null && email == null && telefone == null && data == null) {
+			System.out.println("i de u ceritp");
 			return UserDAOHibernate.updateUser(new User(id, user.getUsername(),password,user.getEmail(),user.getTelefone(),user.getData()),null);
 		}
 		//para atualizar so a imagem
-		UserDAOHibernate.uploadFile(uploadedInputStream, id);
+		if (uploadedInputStream != null) UserDAOHibernate.uploadFile(uploadedInputStream, id);
+		
 		return user;
 		
 	}
@@ -116,8 +119,8 @@ public class UserService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public void deleteUser(@PathParam("id") int id) {
 		
-		PublicacaoDAOHibernate.deletePubliIdUser(id);
-		ComentsDAOHibernate.deleteComentsIdUser(id);
+		//PublicacaoDAOHibernate.deletePubliIdUser(id);
+		//ComentsDAOHibernate.deleteComentsIdUser(id);
 		UserDAOHibernate.deleteUser(id);
 		//n�o posso usar query 
 		//UserDAO.deleteUser(id);

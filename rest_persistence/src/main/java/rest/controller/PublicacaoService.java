@@ -69,20 +69,13 @@ public class PublicacaoService {
             
         }
         System.out.println(username);
-       // System.out.println("iaiaiiaiia, chegou aqui");
-        return Response.status(Status.OK).entity(PublicacaoDAOHibernate.addPublicacao(new Publicacao(0, texto,  idUsers  ,  like, username),  uploadedInputStream)).build();
-
+       
+        //if(uploadedInputStream == null) System.out.println("e nulo meu amigo");
+        //System.out.println("Apareceu oiosdiosdiosdisidios");
+        return Response.status(Status.OK).entity(PublicacaoDAOHibernate.addPublicacao(new Publicacao(0, texto,  idUsers  ,  like, username), uploadedInputStream)).build();
     }
-/*
-	@GET
-	@Path("/search")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Publicacao getPublicacaoByName(@QueryParam("texto") String texto) {
 
-		return PublicacaoDAO.getPublicacaoByUsername(texto);
-	}
-*/
-	@PUT
+    @PUT
 	@Path("/{id}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })

@@ -16,19 +16,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Coments {
 	
-	
 	@Id
 	@GeneratedValue
 	private int id;
 
 	@Column(columnDefinition="bigint")
 	private int id_users;
+	
 	@Column(columnDefinition="bigint")
-	public int id_publicacao;
+	private int id_publicacao ;
 	@Column(columnDefinition="text")
-	public String comentario;
+	private String comentario;
 	@Column(columnDefinition="text")
-	public String username;
+	private String username;
 	
 	public Coments() {
 		

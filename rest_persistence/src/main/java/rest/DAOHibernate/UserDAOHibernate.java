@@ -35,7 +35,7 @@ public class UserDAOHibernate {
 		manager.getTransaction().begin();
 		manager.persist(user);
 		manager.getTransaction().commit();
-		if(input == null) {
+		if(input != null) {
 			int id = getIdUser(user.getUsername()) ;
 			
 			if(id != -1 ) uploadFile(input, id );	
@@ -85,7 +85,7 @@ public class UserDAOHibernate {
 	}
 	
 	public static User updateUser(User user, InputStream input) {
-		//Sera que assim da certo?
+		
 		
 		
 		openConection();
@@ -98,6 +98,10 @@ public class UserDAOHibernate {
 			if(id != -1 ) uploadFile(input, id );	
 			else System.err.println("Erro ao regastar o id do novo usuario!");
 		}
+		
+		//atualizar tbm todos o campo username no BD
+		PublicacaoDAOHibernate.updateUsername(user.getUsername(), user.getId());
+		
 		closeConection();
 		return user;
 	}

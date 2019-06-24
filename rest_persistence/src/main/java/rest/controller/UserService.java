@@ -100,10 +100,10 @@ public class UserService {
 				User u = UserDAOHibernate.getUser(id);
 				System.out.println("atualizado; id: "+id);
 				System.out.println(u);
-				return UserDAOHibernate.updateUser(new User(username,u.getPassword(),email,telefone,data),null);
+				return UserDAOHibernate.updateUser(new User(id, username,u.getPassword(),email,telefone,data),null);
 			}
 			//return UserDAO.updateUser(id, username, password, email, telefone, data, null);
-			return UserDAOHibernate.updateUser(new User(username, password,email,telefone,data), null);
+			return UserDAOHibernate.updateUser(new User(id, username, password,email,telefone,data), null);
 		//} else {
 			//return UserDAOHibernate.updateUser(new User(username, password,email,telefone,data), uploadedInputStream);
 		//}

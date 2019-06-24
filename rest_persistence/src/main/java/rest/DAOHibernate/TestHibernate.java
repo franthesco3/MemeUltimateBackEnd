@@ -17,9 +17,6 @@ public class TestHibernate {
 
 	public static void main(String[] args) {
 
-		EntityManager manager = factory.createEntityManager();
-		List<Publicacao> encontradas = manager.createQuery("select post.id,post.id_users, post.likes, post.texts, post.username from Publicacao as post where post.id = 1"
-				, Publicacao.class).getResultList();
 		/*
 		List<Publicacao> encontradas = manager.createQuery("FROM Publicacao as post, User as u WHERE post.id_users = u.id ORDER BY post.id DESC "
 						, Publicacao.class).getResultList();
@@ -34,8 +31,9 @@ public class TestHibernate {
 		manager.persist(user);
 		manager.getTransaction().commit();
 		*/
-		manager.close();
-		factory.close();
+		
+	User user = new User(2,"frant",null,"TAFATAA","123","wfefew");
+	UserDAOHibernate.updateUser(user,null);
 		
 	}
 	

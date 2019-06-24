@@ -22,7 +22,7 @@ public class Coments {
 	private int id;
 
 	@Column(columnDefinition="bigint")
-	public int id_users;
+	private int id_users;
 	@Column(columnDefinition="bigint")
 	public int id_publicacao;
 	@Column(columnDefinition="text")

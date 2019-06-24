@@ -1,6 +1,5 @@
 package rest.controller;
 
-import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,18 +12,18 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
+
 import com.sun.jersey.multipart.FormDataParam;
 
-import rest.dao.ComentsDAO;
+import rest.DAOHibernate.ComentsDAOHibernate;
 import rest.model.Coments;
-import rest.model.User;
+
 
 @Path("/coments")
 public class ComentsService {
@@ -32,17 +31,17 @@ public class ComentsService {
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Coments> getComents() {
-		return ComentsDAO.getAllComents();
+		return ComentsDAOHibernate.getAllComents();
 	}
 
-	// Controle da resposta (status code, mensagem)
+	/* Controle da resposta (status code, mensagem)
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getComents(@PathParam("id") int id) {
-		return Response.status(Status.OK).entity(ComentsDAO.getComents(id)).build();
+		return Response.status(Status.OK).entity(ComentsDAOHibernate.getComents(id)).build();
 	}
-
+	 */
 
     @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -54,8 +53,8 @@ public class ComentsService {
         	
         	return Response.status(400).build();
         } 
-        
-        return Response.status(Status.OK).entity(ComentsDAO.addComents( id_publicacao, id_user, comentario)).build();
+        String username = null;
+        return Response.status(Status.OK).entity(ComentsDAOHibernate.addComents(new Coments(0, id_user, id_publicacao, comentario, username))).build();
     }
 
 	@PUT
@@ -63,8 +62,8 @@ public class ComentsService {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Coments updateComents(@FormDataParam("id") int id ,@FormDataParam("comentario") String comentario, @FormDataParam("idUser") int id_user,  @FormDataParam("idPostagem") int id_publicacao) {
-		
-		return ComentsDAO.updateComents( id, id_publicacao, id_user, comentario);
+		String username = null;
+		return ComentsDAOHibernate.updateComents( new Coments(0, id_user, id_publicacao, comentario, username));
 		
 	}
 
@@ -72,7 +71,7 @@ public class ComentsService {
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public void deleteComents(@PathParam("id") int id) {
-		ComentsDAO.deleteComents(id);
+		ComentsDAOHibernate.deleteComents(id);
 	}
 	
 	//Session

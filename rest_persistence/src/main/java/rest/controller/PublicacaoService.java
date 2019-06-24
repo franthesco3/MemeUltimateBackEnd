@@ -29,8 +29,7 @@ import rest.model.User;
 
 @Path("/publicacao")
 public class PublicacaoService {
-	private Publicacao p;
-	// Controle da resposta (status code, mensagem)
+	
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Publicacao> getPublicacao() {

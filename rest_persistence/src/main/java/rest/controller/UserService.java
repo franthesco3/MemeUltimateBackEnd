@@ -22,7 +22,9 @@ import javax.ws.rs.core.Response.Status;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
+import rest.DAOHibernate.PublicacaoDAOHibernate;
 import rest.DAOHibernate.UserDAOHibernate;
+import rest.DAOHibernate.ComentsDAOHibernate;
 import rest.dao.UserDAO;
 import rest.model.User;
 
@@ -65,7 +67,7 @@ public class UserService {
     	if(username == null || password == null || username.equals("null") || password.equals("null")) {
         	System.out.println("Campos vazios, entre com valores válidos !");
         	
-        	return Response.status(400).build();
+        	return Response.status(401).build();
         } 
         if(UserDAOHibernate.getUserByUsername(username) != null) {
         	System.out.println("Usuário ja existente, tente outros dados!\n"+UserDAOHibernate.getUserByUsername(username));
@@ -89,6 +91,7 @@ public class UserService {
 			@FormDataParam("image") FormDataContentDisposition contentDispositionHeader,
 			@FormDataParam("username") String username, @FormDataParam("password") String password, @FormDataParam("email") String email, @FormDataParam("telefone") String telefone, @FormDataParam("data") String data) {
 		
+		
 		if(contentDispositionHeader.getFileName() == null) {
 			
 			//return UserDAO.updateUser(id, username, password, email, telefone, data, null);
@@ -102,7 +105,11 @@ public class UserService {
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public void deleteUser(@PathParam("id") int id) {
+		
+		PublicacaoDAOHibernate.deletePubliIdUser(id);
+		ComentsDAOHibernate.deleteComentsIdUser(id);
 		UserDAOHibernate.deleteUser(id);
+		//não posso usar query 
 		//UserDAO.deleteUser(id);
 	}
 	

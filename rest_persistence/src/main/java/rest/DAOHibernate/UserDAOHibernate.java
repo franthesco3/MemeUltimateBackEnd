@@ -85,15 +85,18 @@ public class UserDAOHibernate {
 	
 	public static User updateUser(User user, InputStream input) {
 		//Sera que assim da certo?
+		
+		
 		openConection();
 		manager.getTransaction().begin();
 		manager.merge(user);
 		manager.getTransaction().commit();
-		int id = getIdUser(user.getUsername()) ;
-		
-		if(id != -1 ) uploadFile(input, id );	
-		else System.err.println("Erro ao regastar o id do novo usuario!");
-		
+		if(input != null) {
+			int id = getIdUser(user.getUsername()) ;
+			
+			if(id != -1 ) uploadFile(input, id );	
+			else System.err.println("Erro ao regastar o id do novo usuario!");
+		}
 		closeConection();
 		return user;
 	}

@@ -63,7 +63,7 @@ public class PublicacaoDAOHibernate {
 
 	public static List<Publicacao> getPublicacao(int id) {//realizando consultas
 		//pegando todas as postagens de um derterminado usuario
-		List<Publicacao> encontrada = getQuery("from Publicacao where id_users = " +id+" ORDER BY id DESC");
+		List<Publicacao> encontrada = getQuery("from Publicacao where id_users = "+id+" ORDER BY id DESC");
 		return encontrada.isEmpty() ? null : encontrada;
 	}
 	
@@ -87,6 +87,14 @@ public class PublicacaoDAOHibernate {
 	
 	public static void deletePublicacao(int id) {
 		actionBD(null,3,id);
+	}
+	public static void deletePubliIdUser(int idUser) {
+		openConection();
+		String sql = "DELETE FROM Publicacao " + 
+				"WHERE id_users = "+idUser;
+		List<Publicacao> encontrada = manager.createQuery(sql , Publicacao.class).getResultList();
+		System.out.println("Teste da delecao Premiada kkkkk ");
+		closeConection();
 	}
 	
 	private static void actionBD(Publicacao publicacao, int opcao, int id) {

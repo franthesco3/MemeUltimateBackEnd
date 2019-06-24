@@ -38,7 +38,7 @@ public class PublicacaoDAO {
 			if (rs.next()) {
 				uploadFile(input, rs.getInt("id"));
 				
-				return new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), null ,rs.getInt("id"));
+				return new Publicacao(rs.getInt("id"), rs.getString("texts"), rs.getInt("id_users"), rs.getInt("likes") ,null);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -60,7 +60,7 @@ public class PublicacaoDAO {
 			if (rs.next()) {
 				if(input != null)
 					uploadFile(input, rs.getInt("id"));
-				return new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), null,rs.getInt("id"));
+				return new Publicacao(rs.getInt("id"), rs.getString("texts"), rs.getInt("id_users"), rs.getInt("likes") ,null);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -86,7 +86,7 @@ public class PublicacaoDAO {
 			ResultSet rs = stmt.executeQuery("SELECT post.id, post.likes,post.id_users, u.username, post.texts" + 
 					" FROM publicacao post, users u WHERE post.id_users = u.id ORDER BY post.id DESC");
 			while (rs.next()) {
-				Publicacao publi = new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), rs.getString("username"),rs.getInt("id"));
+				Publicacao publi = new Publicacao(rs.getInt("id"), rs.getString("texts"), rs.getInt("id_users"), rs.getInt("likes") ,rs.getString("username"));
 				post.add(publi);
 			}
 		} catch (SQLException e) {
@@ -109,7 +109,7 @@ public class PublicacaoDAO {
 			ResultSet rs = pStmt.executeQuery();
 			
 			while (rs.next()) {
-				Publicacao publi = new Publicacao(rs.getString("texts"), rs.getInt("id_users"),rs.getInt("id"), rs.getInt("likes"), rs.getString("username"),rs.getInt("id"));
+				Publicacao publi =  new Publicacao(rs.getInt("id"), rs.getString("texts"), rs.getInt("id_users"), rs.getInt("likes") ,rs.getString("username"));
 				post.add(publi);
 			}
 			return post;
